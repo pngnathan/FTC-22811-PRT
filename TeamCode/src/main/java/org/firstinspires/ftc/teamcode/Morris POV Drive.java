@@ -49,7 +49,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.RobotHardware;
  * OpMode object when it's created, so it can access all core OpMode functions.  This is illustrated below.
  *
  * In this concept sample, the hardware class file is called org.firstinspires.ftc.teamcode.RobotHardware.java and it must accompany this sample OpMode.
- * So, if you copy org.firstinspires.ftc.teamcode.ConceptExternalHardwareClass.java into TeamCode (using Android Studio or OnBotJava) then org.firstinspires.ftc.teamcode.RobotHardware.java
+ * So, if you copy org.firstinspires.ftc.teamcode.Morris POV Drive.java into TeamCode (using Android Studio or OnBotJava) then org.firstinspires.ftc.teamcode.RobotHardware.java
  * must also be copied to the same location (maintaining its name).
  *
  * For comparison purposes, this sample and its accompanying hardware class duplicates the functionality of the
@@ -64,6 +64,12 @@ import org.firstinspires.ftc.robotcontroller.external.samples.RobotHardware;
  *  Also add another new file named org.firstinspires.ftc.teamcode.RobotHardware.java, select the sample with that name, and select Not an OpMode.
  */
 
+////Mr. Morris: TO DO:  1) Finish updating to match RobotHardware file definitions, then delete or comment out @Disabled
+////                    2) Consider remapping buttons for movement to one joystick and arm rotation to other joystick.
+////                    3) Set preset locations for arm height and maybe gripper limits
+////                    4) Use math to keep wrist turned so that gripper is level with ground (rotate relative to arm rotation)
+////                    5) Enable Camera live view
+
 @TeleOp(name="Concept: Robot Hardware Class", group="Robot")
 @Disabled
 public class ConceptExternalHardwareClass extends LinearOpMode {
@@ -76,8 +82,9 @@ public class ConceptExternalHardwareClass extends LinearOpMode {
     public void runOpMode() {
         double drive        = 0;
         double turn         = 0;
-        double arm          = 0;
-        double handOffset   = 0;
+        double armRotate    = 0; //updated to match RobotHardware file definitions
+        double armExtend    = 0; //added to match RobotHardware file definitions
+        //double handOffset   = 0; //TO DO: update to match RobotHardware file definitions
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
@@ -92,6 +99,8 @@ public class ConceptExternalHardwareClass extends LinearOpMode {
             // Run wheels in POV mode (note: The joystick goes negative when pushed forward, so negate it)
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
             // This way it's also easy to just drive straight, or just turn.
+
+            ////Mr. Morris: Alternatively we could use right trigger for forward, left trigger for reverse, left_stick_x for turning
             drive = -gamepad1.left_stick_y;
             turn  =  gamepad1.right_stick_x;
 
@@ -103,36 +112,44 @@ public class ConceptExternalHardwareClass extends LinearOpMode {
             // Each time around the loop, the servos will move by a small amount.
             // Limit the total offset to half of the full travel range
             if (gamepad1.right_bumper)
-                handOffset += robot.HAND_SPEED;
+                handOffset += robot.GRIPPER_SPEED; //TO DO: update to match RobotHardware file definitions, should be called GRIPPER_SPEED and WRIST_SPEED
             else if (gamepad1.left_bumper)
-                handOffset -= robot.HAND_SPEED;
+                handOffset -= robot.GRIPPER_SPEED; //TO DO: update to match RobotHardware file definitions, should be called GRIPPER_SPEED and WRIST_SPEED
             handOffset = Range.clip(handOffset, -0.5, 0.5);
 
             // Move both servos to new position.  Use org.firstinspires.ftc.teamcode.RobotHardware class
-            robot.setHandPositions(handOffset);
+            robot.setHandPositions(handOffset); //TO DO: update to match RobotHardware file definitions
 
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in org.firstinspires.ftc.teamcode.RobotHardware class.
+            //// Mr. Morris: Consider redefining the arm movements to use a joystick or triggers with a,b,x,y buttons reserved for preset positions
+            ////             TO DO: Add code for armExtend
             if (gamepad1.y)
-                arm = robot.ARM_UP_POWER;
+                armRotate = robot.ARM_UP_POWER; //updated to match RobotHardware file definitions
             else if (gamepad1.a)
-                arm = robot.ARM_DOWN_POWER;
+                armRotate = robot.ARM_DOWN_POWER; //updated to match RobotHardware file definitions
             else
-                arm = 0;
+                armRotate = 0; //updated to match RobotHardware file definitions
 
-            robot.setArmPower(arm);
+            if (gamepad1.x)
+                armExtend = robot.ARM_EXTEND_POWER; //updated to match RobotHardware file definitions
+            else if (gamepad1.b)
+                armExtend = robot.ARM_RETRACT_POWER; //updated to match RobotHardware file definitions
+            else
+                armExtend = 0; //updated to match RobotHardware file definitions
+            robot.setArmPower(armRotate, armExtend); //updated to match RobotHardware file definitions
 
             // Send telemetry messages to explain controls and show robot status
             telemetry.addData("Drive", "Left Stick");
             telemetry.addData("Turn", "Right Stick");
             telemetry.addData("Arm Up/Down", "Y & A Buttons");
-            telemetry.addData("Hand Open/Closed", "Left and Right Bumpers");
+            telemetry.addData("Hand Open/Closed", "Left and Right Bumpers"); //TO DO: update to match RobotHardware file definitions
             telemetry.addData("-", "-------");
 
             telemetry.addData("Drive Power", "%.2f", drive);
             telemetry.addData("Turn Power",  "%.2f", turn);
-            telemetry.addData("Arm Power",  "%.2f", arm);
-            telemetry.addData("Hand Position",  "Offset = %.2f", handOffset);
+            telemetry.addData("Arm Power",  "%.2f", arm); //TO DO: update to match RobotHardware file definitions
+            telemetry.addData("Hand Position",  "Offset = %.2f", handOffset); //TO DO: update to match RobotHardware file definitions
             telemetry.update();
 
             // Pace this loop so hands move at a reasonable speed.
