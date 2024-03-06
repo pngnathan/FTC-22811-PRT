@@ -123,6 +123,8 @@ public class MorrisPOVDrive extends LinearOpMode {
             // Move both servos to new position.  Use org.firstinspires.ftc.teamcode.RobotHardware class
             robot.setGripperPositions(gripperOffset); //updated to match RobotHardware file definitions
 
+            ////Mr. Morris: TO DO: Add code for wrist
+
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in org.firstinspires.ftc.teamcode.RobotHardware class.
             //// Mr. Morris: Consider redefining the arm movements to use a joystick or triggers with a,b,x,y buttons reserved for preset positions
