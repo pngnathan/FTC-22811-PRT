@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 /*
- * This file works in conjunction with the External Hardware Class sample called: org.firstinspires.ftc.teamcode.Morris POV Drive.java
+ * This file works in conjunction with the External Hardware Class sample called: org.firstinspires.ftc.teamcode.MorrisPOVDrive.java
  * Please read the explanations in that Sample about how to use this class definition.
  *
  * This file defines a Java Class that performs all the setup and configuration for a sample robot's hardware (motors and sensors).
@@ -47,7 +47,7 @@ import com.qualcomm.robotcore.util.Range;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with *exactly the same name*.
  *
  * Or... In OnBot Java, add a new file named org.firstinspires.ftc.teamcode.RobotHardware.java, select this sample, and select Not an OpMode.
- * Also add a new OpMode, select the sample org.firstinspires.ftc.teamcode.Morris POV Drive.java, and select TeleOp.
+ * Also add a new OpMode, select the sample org.firstinspires.ftc.teamcode.MorrisPOVDrive.java, and select TeleOp.
  *
  */
 
@@ -183,13 +183,9 @@ public class RobotHardware {
      * @param offset
      */
 
-    ////Mr. Morris: "TO DO: Update this to set positions for wrist and gripper, maybe as separate
-    ////                    functions"
-    /*
-    public void setHandPositions(double offset) {
+    ////Mr. Morris: "TO DO: Update this to set positions for wrist and gripper, maybe as separate functions"
+    public void setGripperPositions(double offset) {
         offset = Range.clip(offset, -0.5, 0.5);
-        leftHand.setPosition(MID_SERVO + offset);
-        rightHand.setPosition(MID_SERVO - offset);
+        gripper.setPosition(MID_SERVO + offset);
     }
-    */
 }
