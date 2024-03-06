@@ -126,7 +126,7 @@ public class MorrisPOVDrive extends LinearOpMode {
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in org.firstinspires.ftc.teamcode.RobotHardware class.
             //// Mr. Morris: Consider redefining the arm movements to use a joystick or triggers with a,b,x,y buttons reserved for preset positions
-            ////             TO DO: Add code for armExtend
+
             if (gamepad1.y)
                 armRotate = robot.ARM_UP_POWER; //updated to match RobotHardware file definitions
             else if (gamepad1.a)
