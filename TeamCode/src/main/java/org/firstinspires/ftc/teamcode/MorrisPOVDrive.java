@@ -84,7 +84,7 @@ public class MorrisPOVDrive extends LinearOpMode {
         double turn         = 0;
         double armRotate    = 0; //updated to match RobotHardware file definitions
         double armExtend    = 0; //added to match RobotHardware file definitions
-        double gripperOffset   = 0; //TO DO: update to match RobotHardware file definitions
+        double gripperOffset   = 0; //updated to match RobotHardware file definitions
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
@@ -120,8 +120,8 @@ public class MorrisPOVDrive extends LinearOpMode {
                 gripperOffset -= robot.GRIPPER_SPEED; //updated to match RobotHardware file definitions, should be called GRIPPER_SPEED and WRIST_SPEED
             gripperOffset = Range.clip(gripperOffset, -0.5, 0.5);
 
-            // Move both servos to new position.  Use org.firstinspires.ftc.teamcode.RobotHardware class
-            robot.setGripperPositions(gripperOffset); //updated to match RobotHardware file definitions
+            // Move servo to new position.  Use org.firstinspires.ftc.teamcode.RobotHardware class
+            robot.setGripperPosition(gripperOffset); //updated to match RobotHardware file definitions
 
             ////Mr. Morris: TO DO: Add code for wrist
 
@@ -136,6 +136,8 @@ public class MorrisPOVDrive extends LinearOpMode {
             else
                 armRotate = 0; //updated to match RobotHardware file definitions
 
+            // Use gamepad buttons to extend arm (X) and retract arm (B)
+            // Use the MOTOR constants defined in org.firstinspires.ftc.teamcode.RobotHardware class.
             if (gamepad1.x)
                 armExtend = robot.ARM_EXTEND_POWER; //updated to match RobotHardware file definitions
             else if (gamepad1.b)
@@ -144,17 +146,21 @@ public class MorrisPOVDrive extends LinearOpMode {
                 armExtend = 0; //updated to match RobotHardware file definitions
             robot.setArmPower(armRotate, armExtend); //updated to match RobotHardware file definitions
 
+            ////Mr. Morris: TO DO: Write code to move wrist so that it moves when arm rotates to keep gripper parallel to floor
+
             // Send telemetry messages to explain controls and show robot status
             telemetry.addData("Drive", "Left Stick");
             telemetry.addData("Turn", "Right Stick");
             telemetry.addData("Arm Up/Down", "Y & A Buttons");
-            telemetry.addData("Hand Open/Closed", "Left and Right Bumpers"); //TO DO: update to match RobotHardware file definitions
+            telemetry.addData("Arm Extend/Retract", "X & B Buttons");
+            telemetry.addData("Gripper Open/Closed", "Left and Right Bumpers");
             telemetry.addData("-", "-------");
 
             telemetry.addData("Drive Power", "%.2f", drive);
             telemetry.addData("Turn Power",  "%.2f", turn);
-            telemetry.addData("Arm Power",  "%.2f", arm); //TO DO: update to match RobotHardware file definitions
-            telemetry.addData("Hand Position",  "Offset = %.2f", handOffset); //TO DO: update to match RobotHardware file definitions
+            telemetry.addData("Arm Rotate Power",  "%.2f", armRotate);
+            telemetry.addData("Arm Extend Power",  "%.2f", armExtend);
+            telemetry.addData("Gripper Position",  "Offset = %.2f", gripperOffset);
             telemetry.update();
 
             // Pace this loop so hands move at a reasonable speed.

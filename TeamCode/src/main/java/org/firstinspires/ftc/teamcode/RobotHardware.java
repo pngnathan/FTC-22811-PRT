@@ -178,14 +178,14 @@ public class RobotHardware {
     }
 
     /**
-     * Send the two hand-servos to opposing (mirrored) positions, based on the passed offset.
+     * Send the gripper the new position to go to
      *
      * @param offset
      */
-
-    ////Mr. Morris: "TO DO: Update this to set positions for wrist and gripper, maybe as separate functions"
-    public void setGripperPositions(double offset) {
+        public void setGripperPosition(double offset) {
         offset = Range.clip(offset, -0.5, 0.5);
         gripper.setPosition(MID_SERVO + offset);
     }
+
+    ////Mr. Morris: TO DO: Write function for wrist to go to a specified angle
 }
