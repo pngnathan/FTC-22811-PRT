@@ -49,7 +49,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.RobotHardware;
  * OpMode object when it's created, so it can access all core OpMode functions.  This is illustrated below.
  *
  * In this concept sample, the hardware class file is called org.firstinspires.ftc.teamcode.RobotHardware.java and it must accompany this sample OpMode.
- * So, if you copy org.firstinspires.ftc.teamcode.Morris POV Drive.java into TeamCode (using Android Studio or OnBotJava) then org.firstinspires.ftc.teamcode.RobotHardware.java
+ * So, if you copy org.firstinspires.ftc.teamcode.MorrisPOVDrive.java into TeamCode (using Android Studio or OnBotJava) then org.firstinspires.ftc.teamcode.RobotHardware.java
  * must also be copied to the same location (maintaining its name).
  *
  * For comparison purposes, this sample and its accompanying hardware class duplicates the functionality of the
@@ -70,9 +70,9 @@ import org.firstinspires.ftc.robotcontroller.external.samples.RobotHardware;
 ////                    4) Use math to keep wrist turned so that gripper is level with ground (rotate relative to arm rotation)
 ////                    5) Enable Camera live view
 
-@TeleOp(name="Concept: Robot Hardware Class", group="Robot")
-@Disabled
-public class ConceptExternalHardwareClass extends LinearOpMode {
+@TeleOp(name="Morris POV Drive", group="Robot")
+//@Disabled
+public class MorrisPOVDrive extends LinearOpMode {
 
     // Create a org.firstinspires.ftc.teamcode.RobotHardware object to be used to access robot hardware.
     // Prefix any hardware functions with "robot." to access this class.
@@ -84,12 +84,15 @@ public class ConceptExternalHardwareClass extends LinearOpMode {
         double turn         = 0;
         double armRotate    = 0; //updated to match RobotHardware file definitions
         double armExtend    = 0; //added to match RobotHardware file definitions
-        //double handOffset   = 0; //TO DO: update to match RobotHardware file definitions
+        double gripperOffset   = 0; //TO DO: update to match RobotHardware file definitions
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
 
         // Send telemetry message to signify robot waiting;
+        telemetry.addData(">", "Robot Ready.  Press Play.");    //
+        telemetry.update();
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
@@ -107,18 +110,18 @@ public class ConceptExternalHardwareClass extends LinearOpMode {
             // Combine drive and turn for blended motion. Use org.firstinspires.ftc.teamcode.RobotHardware class
             robot.driveRobot(drive, turn);
 
-            // Use gamepad left & right Bumpers to open and close the claw
+            // Use gamepad left & right Bumpers to open and close the gripper claw
             // Use the SERVO constants defined in org.firstinspires.ftc.teamcode.RobotHardware class.
             // Each time around the loop, the servos will move by a small amount.
             // Limit the total offset to half of the full travel range
             if (gamepad1.right_bumper)
-                handOffset += robot.GRIPPER_SPEED; //TO DO: update to match RobotHardware file definitions, should be called GRIPPER_SPEED and WRIST_SPEED
+                gripperOffset += robot.GRIPPER_SPEED; //updated to match RobotHardware file definitions, should be called GRIPPER_SPEED and WRIST_SPEED
             else if (gamepad1.left_bumper)
-                handOffset -= robot.GRIPPER_SPEED; //TO DO: update to match RobotHardware file definitions, should be called GRIPPER_SPEED and WRIST_SPEED
-            handOffset = Range.clip(handOffset, -0.5, 0.5);
+                gripperOffset -= robot.GRIPPER_SPEED; //updated to match RobotHardware file definitions, should be called GRIPPER_SPEED and WRIST_SPEED
+            gripperOffset = Range.clip(gripperOffset, -0.5, 0.5);
 
             // Move both servos to new position.  Use org.firstinspires.ftc.teamcode.RobotHardware class
-            robot.setHandPositions(handOffset); //TO DO: update to match RobotHardware file definitions
+            robot.setGripperPositions(gripperOffset); //updated to match RobotHardware file definitions
 
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in org.firstinspires.ftc.teamcode.RobotHardware class.
