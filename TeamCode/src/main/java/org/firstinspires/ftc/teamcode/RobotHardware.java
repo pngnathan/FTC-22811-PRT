@@ -69,8 +69,10 @@ public class RobotHardware {
     private Servo   gripper = null;
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
+    //Mr. Morris: TO DO: test and update servo speeds.
     public static final double MID_SERVO       =  0.5 ;
-    public static final double HAND_SPEED      =  0.02 ;  // sets rate to move servo
+    public static final double GRIPPER_SPEED      =  0.02 ;  // sets rate to move gripper servo
+    public static final double WRIST_SPEED        =  0.02 ; // sets rate to move wrist servo
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
     public static final double ARM_EXTEND_POWER  = 0.10 ;
