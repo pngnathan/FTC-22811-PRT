@@ -32,6 +32,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.vision.VisionPortal;
+
 /*
  * This file works in conjunction with the External Hardware Class sample called: org.firstinspires.ftc.teamcode.MorrisPOVDrive.java
  * Please read the explanations in that Sample about how to use this class definition.
@@ -78,6 +82,13 @@ public class RobotHardware {
     public static final double ARM_EXTEND_POWER  = 0.10 ;
     public static final double ARM_RETRACT_POWER  = -0.10 ;
 
+    // Define vision defaults
+    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
+
+
+    //The variable to store our instance of the vision portal.
+    private VisionPortal visionPortal;
+
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public RobotHardware(LinearOpMode opmode) {
         myOpMode = opmode;
@@ -120,6 +131,34 @@ public class RobotHardware {
         wrist.setPosition(MID_SERVO);
         gripper.setPosition(MID_SERVO);
 
+        // Create the vision portal by using a builder.
+        VisionPortal.Builder builder = new VisionPortal.Builder();
+
+        // Set the camera (webcam vs. built-in RC phone camera).
+        if (USE_WEBCAM) {
+            builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        } else {
+            builder.setCamera(BuiltinCameraDirection.BACK);
+        }
+
+        // Choose a camera resolution. Not all cameras support all resolutions.
+        builder.setCameraResolution(new Size(640, 480));
+
+        // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
+        builder.enableLiveView(true);
+
+        // Set the stream format; MJPEG uses less bandwidth than default YUY2.
+        builder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
+
+        // Choose whether or not LiveView stops if no processors are enabled.
+        // If set "true", monitor shows solid orange screen if no processors enabled.
+        // If set "false", monitor shows camera view without annotations.
+        builder.setAutoStopLiveView(false);
+
+        // Build the Vision Portal, using the above settings.
+        visionPortal = builder.build();
+
+        myOpMode.telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
     }
@@ -188,4 +227,8 @@ public class RobotHardware {
     }
 
     ////Mr. Morris: TO DO: Write function for wrist to go to a specified angle
+
+    // Save CPU resources; can resume streaming when needed.
+    public void enableStreaming() {visionPortal.resumeStreaming();}
+    public void disableStreaming() {visionPortal.stopStreaming();}
 }

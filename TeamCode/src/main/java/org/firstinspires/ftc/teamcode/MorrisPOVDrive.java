@@ -64,11 +64,13 @@ import org.firstinspires.ftc.robotcontroller.external.samples.RobotHardware;
  *  Also add another new file named org.firstinspires.ftc.teamcode.RobotHardware.java, select the sample with that name, and select Not an OpMode.
  */
 
-////Mr. Morris: TO DO:  1) Finish updating to match RobotHardware file definitions, then delete or comment out @Disabled
-////                    2) Consider remapping buttons for movement to one joystick and arm rotation to other joystick.
-////                    3) Set preset locations for arm height and maybe gripper limits
-////                    4) Use math to keep wrist turned so that gripper is level with ground (rotate relative to arm rotation)
-////                    5) Enable Camera live view
+/**
+ * Mr. Morris: TO DO:  1) Finish updating to match RobotHardware file definitions, then delete or comment out @Disabled
+ *                     2) Consider remapping buttons for movement to one joystick and arm rotation to other joystick.
+ *                     3) Set preset locations for arm height and maybe gripper limits
+ *                     4) Use math to keep wrist turned so that gripper is level with ground (rotate relative to arm rotation)
+ *                     5) Enable Camera live view
+ */
 
 @TeleOp(name="Morris POV Drive", group="Robot")
 //@Disabled
@@ -90,7 +92,7 @@ public class MorrisPOVDrive extends LinearOpMode {
         robot.init();
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData(">", "Robot Ready.  Press Play.");    //
+        telemetry.addData(">", "Robot Ready.  Press Play to start OpMode.");    //
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -98,6 +100,13 @@ public class MorrisPOVDrive extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
+            // Save CPU resources; can resume streaming when needed.
+            if (gamepad1.dpad_down) {
+                robot.disableStreaming();
+            } else if (gamepad1.dpad_up) {
+                robot.enableStreaming();
+            }
 
             // Run wheels in POV mode (note: The joystick goes negative when pushed forward, so negate it)
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
