@@ -51,25 +51,17 @@ import org.firstinspires.ftc.robotcontroller.external.samples.RobotHardware;
  * In this concept sample, the hardware class file is called org.firstinspires.ftc.teamcode.RobotHardware.java and it must accompany this sample OpMode.
  * So, if you copy org.firstinspires.ftc.teamcode.MorrisPOVDrive.java into TeamCode (using Android Studio or OnBotJava) then org.firstinspires.ftc.teamcode.RobotHardware.java
  * must also be copied to the same location (maintaining its name).
- *
- * For comparison purposes, this sample and its accompanying hardware class duplicates the functionality of the
- * RobotTelopPOV_Linear OpMode.  It assumes three motors (left_drive, right_drive and arm) and two servos (left_hand and right_hand)
- *
- * View the org.firstinspires.ftc.teamcode.RobotHardware.java class file for more details
- *
- *  Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- *  Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- *
- *  In OnBot Java, add a new OpMode, select this sample, and select TeleOp.
- *  Also add another new file named org.firstinspires.ftc.teamcode.RobotHardware.java, select the sample with that name, and select Not an OpMode.
  */
 
 /**
- * Mr. Morris: TO DO:  1) Finish updating to match RobotHardware file definitions, then delete or comment out @Disabled
- *                     2) Consider remapping buttons for movement to one joystick and arm rotation to other joystick.
- *                     3) Set preset locations for arm height and maybe gripper limits
- *                     4) Use math to keep wrist turned so that gripper is level with ground (rotate relative to arm rotation)
- *                     5) Enable Camera live view
+ * Mr. Morris:          TO DO:  1) Consider remapping buttons for movement to one joystick and arm rotation to other joystick,
+ *                                 or triggers for forward/backward, left stick for turning, right stick for steering
+ *                              2) Set preset locations for arm height and maybe gripper limits
+ *                              3) Add elapsed time tracking and implement better button press delay method. See https://stemrobotics.cs.pdx.edu/node/7262.html
+ *
+ *     COMPLETE, NEEDS TESTING: 1) Finish updating to match RobotHardware file definitions, then delete or comment out @Disabled
+ *                              2) Enable Camera live view
+ *                              3) Use math to keep wrist turned so that gripper is level with ground (rotate relative to arm rotation)
  */
 
 @TeleOp(name="Morris POV Drive", group="Robot")
@@ -84,9 +76,9 @@ public class MorrisPOVDrive extends LinearOpMode {
     public void runOpMode() {
         double drive        = 0;
         double turn         = 0;
-        double armRotate    = 0; //updated to match RobotHardware file definitions
-        double armExtend    = 0; //added to match RobotHardware file definitions
-        double gripperOffset   = 0; //updated to match RobotHardware file definitions
+        double armRotate    = 0;
+        double armExtend    = 0;
+        double gripperOffset   = 0;
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
@@ -155,7 +147,9 @@ public class MorrisPOVDrive extends LinearOpMode {
                 armExtend = 0; //updated to match RobotHardware file definitions
             robot.setArmPower(armRotate, armExtend); //updated to match RobotHardware file definitions
 
-            ////Mr. Morris: TO DO: Write code to move wrist so that it moves when arm rotates to keep gripper parallel to floor
+            // Move wrist so that it moves when arm rotates to keep gripper parallel to floor
+            // e.g. if arm angle is at -30 (30 degrees below forward horizontal), wrist must be 30 (30 degrees above forward horizontal) to keep gripper horizontal
+            robot.setWristAngle(robot.getArmAngle() * -1);
 
             // Send telemetry messages to explain controls and show robot status
             telemetry.addData("Drive", "Left Stick");
@@ -172,8 +166,10 @@ public class MorrisPOVDrive extends LinearOpMode {
             telemetry.addData("Gripper Position",  "Offset = %.2f", gripperOffset);
             telemetry.update();
 
+            // Mr. Morris: TO DO: Change pacing method. see https://stemrobotics.cs.pdx.edu/node/7262.html for a better way to handle this timing.
             // Pace this loop so hands move at a reasonable speed.
             sleep(50);
+            idle(); //share processor with other programs - good to include in any loop structure in a linear OpMode
         }
     }
 }

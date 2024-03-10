@@ -77,14 +77,16 @@ public class RobotHardware {
     public static final double MID_SERVO       =  0.5 ;
     public static final double GRIPPER_SPEED      =  0.02 ;  // sets rate to move gripper servo
     public static final double WRIST_SPEED        =  0.02 ; // sets rate to move wrist servo
+    public static final double WRIST_MAX_ANGLE  = 300 ; // Adjust this angle if SRS servo programmer has limited servo travel to less than 300
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
+    public static final double ARM_ROTATE_ENCODER_RESOLUTION = 2786.2 ;
+    public static final double ARM_ROTATE_GEAR_RATIO = 20;
     public static final double ARM_EXTEND_POWER  = 0.10 ;
     public static final double ARM_RETRACT_POWER  = -0.10 ;
 
     // Define vision defaults
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-
 
     //The variable to store our instance of the vision portal.
     private VisionPortal visionPortal;
@@ -191,8 +193,8 @@ public class RobotHardware {
     /**
      * Pass the requested wheel motor powers to the appropriate hardware drive motors.
      *
-     * Mr. Morris: "Our robot is 4 wheel drive, but in tank drive configuration the two left wheels
-     * always travel at the same speed and the two right wheels travel at the same speed."
+     * Mr. Morris: Our robot is 4 wheel drive, but in tank drive configuration the two left wheels
+     *             always travel at the same speed and the two right wheels travel at the same speed.
      *
      * @param leftWheel     Fwd/Rev driving power (-1.0 to 1.0) +ve is forward
      * @param rightWheel    Fwd/Rev driving power (-1.0 to 1.0) +ve is forward
@@ -217,16 +219,32 @@ public class RobotHardware {
     }
 
     /**
-     * Send the gripper the new position to go to
-     *
-     * @param offset
+     * Get the encoder information for the arm rotation motor and convert it to degrees.
+     * Mr. Morris: TO DO: Might need to initialize arm angle on startup and/or adjust for starting/resting position.
+     *                    i.e. if starting location is -45 degrees, initialize and offset it at program start to account for this.
+     *                    Add telemetry statement to test and adjust this.
      */
-        public void setGripperPosition(double offset) {
+    public void getArmAngle(){
+        double angle = armRotate.getCurrentPosition() * 360 / (ARM_ROTATE_ENCODER_RESOLUTION * ARM_ROTATE_GEAR_RATIO);
+    }
+    /**
+     * Mr. Morris: TO DO: may want to work in degrees, then convert to range from -0.5 to 0.5, see setWristAngle() function
+     * Send the gripper the new position to go to
+     * @param offset distance from center mid point.
+     */
+    public void setGripperPosition(double offset) {
         offset = Range.clip(offset, -0.5, 0.5);
         gripper.setPosition(MID_SERVO + offset);
     }
 
-    ////Mr. Morris: TO DO: Write function for wrist to go to a specified angle
+    /**
+     * Send the wrist to certain angle in degrees
+     * @param angle is the angle the wrist should go to, in degrees
+     */
+    public void setWristAngle(double angle){
+        angle = Range.clip(angle / WRIST_MAX_ANGLE, -0.5, 0.5); // convert angle in degrees to a range from -0.5 to 0.5.
+        gripper.setPosition(MID_SERVO + angle);
+    }
 
     // Save CPU resources; can resume streaming when needed.
     public void enableStreaming() {visionPortal.resumeStreaming();}
