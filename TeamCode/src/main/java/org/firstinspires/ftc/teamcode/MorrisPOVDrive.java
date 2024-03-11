@@ -98,7 +98,8 @@ public class MorrisPOVDrive extends LinearOpMode {
 
             // Save CPU resources; can resume streaming when needed.
             if (gamepad1.back) {
-                if (getRuntime() - backLastTime > BUTTON_PRESS_DELAY) robot.toggleStreaming();
+                if (getRuntime() - backLastTime > BUTTON_PRESS_DELAY)
+                    robot.toggleStreaming();
             }
 
             // Run wheels in POV mode (note: The joystick goes negative when pushed forward, so negate it)

@@ -245,8 +245,7 @@ public class RobotHardware {
     }
 
     // Toggle streaming on/off to save CPU resources
-    public void toggleStreaming()
-    {
+    public void toggleStreaming(){
         if (STREAMING) visionPortal.stopStreaming();
         else {
             visionPortal.resumeStreaming();
