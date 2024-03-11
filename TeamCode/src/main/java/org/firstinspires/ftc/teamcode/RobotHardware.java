@@ -75,18 +75,16 @@ public class RobotHardware {
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
     //Mr. Morris: TO DO: test and update servo speeds.
     public static final double MID_SERVO       =  0.5 ;
-    public static final double GRIPPER_SPEED      =  0.02 ;  // sets rate to move gripper servo
-    public static final double WRIST_SPEED        =  0.02 ; // sets rate to move wrist servo
+    public static final double GRIPPER_SPEED = 0.02, GRIPPER_MAX = 1, GRIPPER_MIN = 0 ;  // sets rate to move gripper servo and max and min travel. If you use SRS servo programmer to set limits, this will be 1 and 0. If you need to limit travel in the software, this is where to do it.
+    public static final double WRIST_SPEED = 0.02 ; // sets rate to move wrist servo
     public static final double WRIST_MAX_ANGLE  = 300 ; // Adjust this angle if SRS servo programmer has limited servo travel to less than 300
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
-    public static final double ARM_ROTATE_ENCODER_RESOLUTION = 2786.2 ;
-    public static final double ARM_ROTATE_GEAR_RATIO = 20;
-    public static final double ARM_EXTEND_POWER  = 0.10 ;
-    public static final double ARM_RETRACT_POWER  = -0.10 ;
+    public static final double ARM_INCREMENT_DEGREES = 5, ARM_ROTATE_MAX = 225, ARM_ROTATE_MIN = -45 ;
+    public static final double ARM_ROTATE_ENCODER_RESOLUTION = 2786.2, ARM_ROTATE_GEAR_RATIO = 20 ;
+    public static final double ARM_EXTEND_POWER  = 0.10, ARM_RETRACT_POWER  = -0.10 ;
 
     // Define vision defaults
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
+    private static boolean STREAMING = true; // streaming starts off true, gets toggled in toggleStreaming
 
     //The variable to store our instance of the vision portal.
     private VisionPortal visionPortal;
@@ -246,7 +244,13 @@ public class RobotHardware {
         gripper.setPosition(MID_SERVO + angle);
     }
 
-    // Save CPU resources; can resume streaming when needed.
-    public void enableStreaming() {visionPortal.resumeStreaming();}
-    public void disableStreaming() {visionPortal.stopStreaming();}
+    // Toggle streaming on/off to save CPU resources
+    public void toggleStreaming()
+    {
+        if (STREAMING) visionPortal.stopStreaming();
+        else {
+            visionPortal.resumeStreaming();
+        }
+        STREAMING = !STREAMING;
+    }
 }

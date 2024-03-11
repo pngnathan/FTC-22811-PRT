@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode;/* Copyright (c) 2022 FIRST. All rights reserved.
+package org.firstinspires.ftc.teamcode;
+/* Copyright (c) 2022 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -78,7 +79,9 @@ public class MorrisPOVDrive extends LinearOpMode {
         double turn         = 0;
         double armRotate    = 0;
         double armExtend    = 0;
-        double gripperOffset   = 0;
+        double gripper   = 0;
+        double aLastTime = 0, bLastTime = 0, xLastTime = 0, yLastTime = 0, rBLastTime = 0, lBLastTime = 0, backLastTime = 0;
+        final double BUTTON_PRESS_DELAY = .075;// seconds, keep track of how long a button has been pressed and allow for a quick press to move a servo a small amount while a long press moves the servo a longer distance.
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
@@ -94,10 +97,8 @@ public class MorrisPOVDrive extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Save CPU resources; can resume streaming when needed.
-            if (gamepad1.dpad_down) {
-                robot.disableStreaming();
-            } else if (gamepad1.dpad_up) {
-                robot.enableStreaming();
+            if (gamepad1.back) {
+                if (getRuntime() - backLastTime > BUTTON_PRESS_DELAY) robot.toggleStreaming();
             }
 
             // Run wheels in POV mode (note: The joystick goes negative when pushed forward, so negate it)
@@ -115,34 +116,49 @@ public class MorrisPOVDrive extends LinearOpMode {
             // Use the SERVO constants defined in org.firstinspires.ftc.teamcode.RobotHardware class.
             // Each time around the loop, the servos will move by a small amount.
             // Limit the total offset to half of the full travel range
+
+            // open gripper when right bumper is pressed
             if (gamepad1.right_bumper)
-                gripperOffset += robot.GRIPPER_SPEED; //updated to match RobotHardware file definitions, should be called GRIPPER_SPEED and WRIST_SPEED
+                if (getRuntime() - rBLastTime > BUTTON_PRESS_DELAY)
+                {
+                    if (gripper < robot.GRIPPER_MAX)
+                        gripper += robot.GRIPPER_SPEED;
+                    rBLastTime = getRuntime();
+                }
             else if (gamepad1.left_bumper)
-                gripperOffset -= robot.GRIPPER_SPEED; //updated to match RobotHardware file definitions, should be called GRIPPER_SPEED and WRIST_SPEED
-            gripperOffset = Range.clip(gripperOffset, -0.5, 0.5);
+                {
+                    if (getRuntime() - lBLastTime > BUTTON_PRESS_DELAY)
+                        if (gripper > robot.GRIPPER_MIN)
+                            gripper -= robot.GRIPPER_SPEED;
+                    lBLastTime = getRuntime();
+                }
+            gripper = Range.clip(gripper, -0.5, 0.5);
 
             // Move servo to new position.  Use org.firstinspires.ftc.teamcode.RobotHardware class
-            robot.setGripperPosition(gripperOffset); //updated to match RobotHardware file definitions
-
-            ////Mr. Morris: TO DO: Add code for wrist
+            robot.setGripperPosition(gripper); //updated to match RobotHardware file definitions
 
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in org.firstinspires.ftc.teamcode.RobotHardware class.
             //// Mr. Morris: Consider redefining the arm movements to use a joystick or triggers with a,b,x,y buttons reserved for preset positions
-
             if (gamepad1.y)
-                armRotate = robot.ARM_UP_POWER; //updated to match RobotHardware file definitions
+                if (getRuntime() - yLastTime > BUTTON_PRESS_DELAY)
+                    if (armRotate < robot.ARM_ROTATE_MAX)
+                        armRotate = robot.ARM_UP_POWER; // rotate arm up when Y is pressed
             else if (gamepad1.a)
-                armRotate = robot.ARM_DOWN_POWER; //updated to match RobotHardware file definitions
+                if (getRuntime() - aLastTime > BUTTON_PRESS_DELAY)
+                    if (armRotate > robot.ARM_ROTATE_MIN)
+                        armRotate = robot.ARM_DOWN_POWER; // rotate arm down when A is pressed
             else
                 armRotate = 0; //updated to match RobotHardware file definitions
 
             // Use gamepad buttons to extend arm (X) and retract arm (B)
             // Use the MOTOR constants defined in org.firstinspires.ftc.teamcode.RobotHardware class.
             if (gamepad1.x)
-                armExtend = robot.ARM_EXTEND_POWER; //updated to match RobotHardware file definitions
+                if (getRuntime() - xLastTime > BUTTON_PRESS_DELAY)
+                    if (robot.armExtend)
+                    armExtend = robot.ARM_EXTEND_POWER; // extend when X is pressed
             else if (gamepad1.b)
-                armExtend = robot.ARM_RETRACT_POWER; //updated to match RobotHardware file definitions
+                armExtend = robot.ARM_RETRACT_POWER; // retract when B is pressed
             else
                 armExtend = 0; //updated to match RobotHardware file definitions
             robot.setArmPower(armRotate, armExtend); //updated to match RobotHardware file definitions
@@ -163,12 +179,9 @@ public class MorrisPOVDrive extends LinearOpMode {
             telemetry.addData("Turn Power",  "%.2f", turn);
             telemetry.addData("Arm Rotate Power",  "%.2f", armRotate);
             telemetry.addData("Arm Extend Power",  "%.2f", armExtend);
-            telemetry.addData("Gripper Position",  "Offset = %.2f", gripperOffset);
+            telemetry.addData("Gripper Position",  "Offset = %.2f", gripper);
             telemetry.update();
 
-            // Mr. Morris: TO DO: Change pacing method. see https://stemrobotics.cs.pdx.edu/node/7262.html for a better way to handle this timing.
-            // Pace this loop so hands move at a reasonable speed.
-            sleep(50);
             idle(); //share processor with other programs - good to include in any loop structure in a linear OpMode
         }
     }
