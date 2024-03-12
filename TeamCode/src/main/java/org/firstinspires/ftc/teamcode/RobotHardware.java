@@ -83,16 +83,17 @@ public class RobotHardware {
     public static final double GRIPPER_SPEED = 0.02, GRIPPER_MAX = 1, GRIPPER_MIN = 0 ;  // sets rate to move gripper servo and max and min travel. If you use SRS servo programmer to set limits, this will be 1 and 0. If you need to limit travel in the software, this is where to do it.
     public static final double WRIST_SPEED = 0.02 ; // sets rate to move wrist servo
     public static final double WRIST_MAX_ANGLE  = 300 ; // Adjust this angle if SRS servo programmer has limited servo travel to less than 300
-    public static final double ARM_INCREMENT_DEGREES = 5, ARM_ROTATE_MAX = 225, ARM_ROTATE_MIN = -45 ;
+    public static final int ARM_INCREMENT_DEGREES = 5, ARM_ROTATE_MAX = 225, ARM_ROTATE_MIN = -45 ;
     public static final double ARM_ROTATE_ENCODER_RESOLUTION = 2786.2, ARM_ROTATE_GEAR_RATIO = 20 ;
     public static final double ARM_EXTEND_POWER  = 0.10, ARM_RETRACT_POWER  = -0.10 ;
     public static final double ARM_EXTEND_MAX = 1000; // TO DO: This is almost certainly a wrong number for the max travel.
     public static final double ARM_RETRACT_MAX = 0; // TO DO: This is almost certainly a wrong number for the max travel.
+
     // Define vision defaults
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-    private static boolean STREAMING = true; // streaming starts off true, gets toggled in toggleStreaming
+    private boolean streaming = true; // streaming starts off true, gets toggled in toggleStreaming
 
-    //The variable to store our instance of the vision portal.
+    // The variable to store our instance of the vision portal.
     private VisionPortal visionPortal;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
@@ -214,12 +215,12 @@ public class RobotHardware {
     /**
      * Pass the requested arm power to the appropriate hardware drive motor
      *
-     * @param rotatePower driving power (-1.0 to 1.0)
-     * @param extendPower driving power (-1.0 to 1.0)
+     * @param targetAngle angle from -45 to 225
+     * @param targetExtension encoder value ------ Range?
      */
-    public void setArmPower(double rotatePower, double extendPower) {
-        armRotate.setPower(rotatePower);
-        armExtend.setPower(extendPower);
+    public void setArmPosition(double targetAngle, double targetExtension) {
+        armRotate.setTargetPosition((int) targetAngle);
+        armExtend.setTargetPosition((int) targetExtension);
     }
 
     /**
@@ -231,6 +232,11 @@ public class RobotHardware {
     public double getArmAngle(){
         return armRotate.getCurrentPosition() * 360 / (ARM_ROTATE_ENCODER_RESOLUTION * ARM_ROTATE_GEAR_RATIO);
     }
+
+    public double getArmExtension(){
+        return armExtend.getCurrentPosition();
+    }
+
     /**
      * Mr. Morris: TO DO: may want to work in degrees, then convert to range from -0.5 to 0.5, see setWristAngle() function
      * Send the gripper the new position to go to
@@ -242,7 +248,7 @@ public class RobotHardware {
     }
 
     /**
-     * Send the wrist to certain angle in degrees
+     * Send the wrist to a certain angle in degrees
      * @param angle is the angle the wrist should go to, in degrees
      */
     public void setWristAngle(double angle){
@@ -252,10 +258,10 @@ public class RobotHardware {
 
     // Toggle streaming on/off to save CPU resources
     public void toggleStreaming(){
-        if (STREAMING) visionPortal.stopStreaming();
+        if (streaming) visionPortal.stopStreaming();
         else {
             visionPortal.resumeStreaming();
         }
-        STREAMING = !STREAMING;
+        streaming = !streaming;
     }
 }
