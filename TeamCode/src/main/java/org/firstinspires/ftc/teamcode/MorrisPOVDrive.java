@@ -76,12 +76,13 @@ public class MorrisPOVDrive extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        double drive        = 0;
-        double turn         = 0;
+        double drive;
+        double turn;
         double armRotate    = 0;
         double armExtend    = 0;
         double gripper   = 0;
-        double aLastTime = 0, bLastTime = 0, xLastTime = 0, yLastTime = 0, rBLastTime = 0, lBLastTime = 0, backLastTime = 0;
+        double aLastTime = 0, bLastTime = 0, xLastTime = 0, yLastTime = 0, rBLastTime = 0, lBLastTime = 0;
+        boolean backButtonPressed;
         final double BUTTON_PRESS_DELAY = .075;// seconds, keep track of how long a button has been pressed and allow for a quick press to move a servo a small amount while a long press moves the servo a longer distance.
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
@@ -98,10 +99,15 @@ public class MorrisPOVDrive extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Save CPU resources; can resume streaming when needed.
+            // This uses a method of tracking the state of the button called latching. See https://stemrobotics.cs.pdx.edu/node/7262.html.
+            // It won't toggle until the button is released. This avoids double-presses.
             if (gamepad1.back) {
-                if (getRuntime() - backLastTime > BUTTON_PRESS_DELAY)
+                if (!gamepad1.back) {
                     robot.toggleStreaming();
+                    backButtonPressed = true;
+                }
             }
+            else backButtonPressed = false;
 
             // Run wheels in POV mode (note: The joystick goes negative when pushed forward, so negate it)
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
@@ -119,7 +125,8 @@ public class MorrisPOVDrive extends LinearOpMode {
             // Each time around the loop, the servos will move by a small amount.
             // Limit the total offset to half of the full travel range
 
-            // open gripper when right bumper is pressed
+            // Open gripper when right bumper is pressed if it's not already at max, close gripper when left bumper is pressed if it's not already at min
+            // Keeps track of how long a button is pressed and moves a small amount for a short press and a larger amount for a long press
             if (gamepad1.right_bumper)
                 if (getRuntime() - rBLastTime > BUTTON_PRESS_DELAY)
                 {
@@ -137,11 +144,11 @@ public class MorrisPOVDrive extends LinearOpMode {
             gripper = Range.clip(gripper, -0.5, 0.5);
 
             // Move servo to new position.  Use org.firstinspires.ftc.teamcode.RobotHardware class
-            robot.setGripperPosition(gripper); //updated to match RobotHardware file definitions
+            robot.setGripperPosition(gripper);
 
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in org.firstinspires.ftc.teamcode.RobotHardware class.
-            //// Mr. Morris: Consider redefining the arm movements to use a joystick or triggers with a,b,x,y buttons reserved for preset positions
+            //// Mr. Morris: Consider redefining the arm movements to use a joystick with a,b,x,y buttons reserved for preset positions like in FTC season
             if (gamepad1.y)
                 if (getRuntime() - yLastTime > BUTTON_PRESS_DELAY) {
                     if (armRotate < RobotHardware.ARM_ROTATE_MAX)
@@ -174,7 +181,7 @@ public class MorrisPOVDrive extends LinearOpMode {
 
             // Move wrist so that it moves when arm rotates to keep gripper parallel to floor
             // e.g. if arm angle is at -30 (30 degrees below forward horizontal), wrist must be 30 (30 degrees above forward horizontal) to keep gripper horizontal
-            robot.setWristAngle(robot.getArmAngle() * -1);
+            robot.setWristAngle(-robot.getArmAngle());
 
             // Send telemetry messages to explain controls and show robot status
             telemetry.addData("Drive", "Left Stick");
