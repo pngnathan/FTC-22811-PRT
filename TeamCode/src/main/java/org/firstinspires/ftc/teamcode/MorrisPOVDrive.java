@@ -33,7 +33,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.RobotHardware;
+import org.firstinspires.ftc.teamcode.RobotHardware;
+
 
 /*
  * This OpMode illustrates how to use an external "hardware" class to modularize all the robot's sensors and actuators.
