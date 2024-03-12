@@ -221,6 +221,10 @@ public class RobotHardware {
     public void setArmPosition(double targetAngle, double targetExtension) {
         armRotate.setTargetPosition((int) targetAngle);
         armExtend.setTargetPosition((int) targetExtension);
+        /**
+         * Need to write code to set power whose direction is dependent on current position,
+         * preferably a PID type implementation
+        */
     }
 
     /**
