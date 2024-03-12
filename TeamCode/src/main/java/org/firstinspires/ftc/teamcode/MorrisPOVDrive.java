@@ -123,15 +123,15 @@ public class MorrisPOVDrive extends LinearOpMode {
             if (gamepad1.right_bumper)
                 if (getRuntime() - rBLastTime > BUTTON_PRESS_DELAY)
                 {
-                    if (gripper < robot.GRIPPER_MAX)
-                        gripper += robot.GRIPPER_SPEED;
+                    if (gripper < RobotHardware.GRIPPER_MAX)
+                        gripper += RobotHardware.GRIPPER_SPEED;
                     rBLastTime = getRuntime();
                 }
             else if (gamepad1.left_bumper)
                 {
                     if (getRuntime() - lBLastTime > BUTTON_PRESS_DELAY)
-                        if (gripper > robot.GRIPPER_MIN)
-                            gripper -= robot.GRIPPER_SPEED;
+                        if (gripper > RobotHardware.GRIPPER_MIN)
+                            gripper -= RobotHardware.GRIPPER_SPEED;
                     lBLastTime = getRuntime();
                 }
             gripper = Range.clip(gripper, -0.5, 0.5);
@@ -143,27 +143,34 @@ public class MorrisPOVDrive extends LinearOpMode {
             // Use the MOTOR constants defined in org.firstinspires.ftc.teamcode.RobotHardware class.
             //// Mr. Morris: Consider redefining the arm movements to use a joystick or triggers with a,b,x,y buttons reserved for preset positions
             if (gamepad1.y)
-                if (getRuntime() - yLastTime > BUTTON_PRESS_DELAY)
-                    if (armRotate < robot.ARM_ROTATE_MAX)
-                        armRotate = robot.ARM_UP_POWER; // rotate arm up when Y is pressed
+                if (getRuntime() - yLastTime > BUTTON_PRESS_DELAY) {
+                    if (armRotate < RobotHardware.ARM_ROTATE_MAX)
+                        armRotate += RobotHardware.ARM_INCREMENT_DEGREES; // rotate arm up when Y is pressed
+                    yLastTime = getRuntime();
+                }
             else if (gamepad1.a)
-                if (getRuntime() - aLastTime > BUTTON_PRESS_DELAY)
-                    if (armRotate > robot.ARM_ROTATE_MIN)
-                        armRotate = robot.ARM_DOWN_POWER; // rotate arm down when A is pressed
-            else
-                armRotate = 0; //updated to match RobotHardware file definitions
+                if (getRuntime() - aLastTime > BUTTON_PRESS_DELAY) {
+                    if (armRotate > RobotHardware.ARM_ROTATE_MIN)
+                        armRotate -= RobotHardware.ARM_INCREMENT_DEGREES; // rotate arm down when A is pressed
+                    aLastTime = getRuntime();
+                }
+            else armRotate = 0; //updated to match RobotHardware file definitions
 
             // Use gamepad buttons to extend arm (X) and retract arm (B)
             // Use the MOTOR constants defined in org.firstinspires.ftc.teamcode.RobotHardware class.
-            if (gamepad1.x)
-                if (getRuntime() - xLastTime > BUTTON_PRESS_DELAY)
-                    if (robot.armExtend)
-                    armExtend = robot.ARM_EXTEND_POWER; // extend when X is pressed
-            else if (gamepad1.b)
-                armExtend = robot.ARM_RETRACT_POWER; // retract when B is pressed
-            else
-                armExtend = 0; //updated to match RobotHardware file definitions
-            robot.setArmPower(armRotate, armExtend); //updated to match RobotHardware file definitions
+            if (gamepad1.x && getRuntime() - xLastTime > BUTTON_PRESS_DELAY) {
+                if (armExtend < RobotHardware.ARM_EXTEND_MAX)
+                    armExtend += RobotHardware.ARM_EXTEND_POWER; // extend when X is pressed
+                xLastTime = getRuntime();
+                }
+            else if (gamepad1.b && getRuntime() - bLastTime > BUTTON_PRESS_DELAY) {
+                if (armExtend > RobotHardware.ARM_RETRACT_MAX) {
+                    armExtend -= RobotHardware.ARM_RETRACT_POWER; // retract when B is pressed
+                }
+                bLastTime = getRuntime();
+            }
+            else armExtend = 0; // don't move if x and b aren't pressed.
+            robot.setArmPower(armRotate, armExtend); // send rotation and extension values to robot
 
             // Move wrist so that it moves when arm rotates to keep gripper parallel to floor
             // e.g. if arm angle is at -30 (30 degrees below forward horizontal), wrist must be 30 (30 degrees above forward horizontal) to keep gripper horizontal

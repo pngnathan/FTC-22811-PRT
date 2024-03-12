@@ -85,7 +85,8 @@ public class RobotHardware {
     public static final double ARM_INCREMENT_DEGREES = 5, ARM_ROTATE_MAX = 225, ARM_ROTATE_MIN = -45 ;
     public static final double ARM_ROTATE_ENCODER_RESOLUTION = 2786.2, ARM_ROTATE_GEAR_RATIO = 20 ;
     public static final double ARM_EXTEND_POWER  = 0.10, ARM_RETRACT_POWER  = -0.10 ;
-
+    public static final double ARM_EXTEND_MAX = 100; // TO DO: This is almost certainly a wrong number for the max travel.
+    public static final double ARM_RETRACT_MAX = 0; // TO DO: This is almost certainly a wrong number for the max travel.
     // Define vision defaults
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     private static boolean STREAMING = true; // streaming starts off true, gets toggled in toggleStreaming
@@ -226,8 +227,8 @@ public class RobotHardware {
      *                    i.e. if starting location is -45 degrees, initialize and offset it at program start to account for this.
      *                    Add telemetry statement to test and adjust this.
      */
-    public void getArmAngle(){
-        double angle = armRotate.getCurrentPosition() * 360 / (ARM_ROTATE_ENCODER_RESOLUTION * ARM_ROTATE_GEAR_RATIO);
+    public double getArmAngle(){
+        return armRotate.getCurrentPosition() * 360 / (ARM_ROTATE_ENCODER_RESOLUTION * ARM_ROTATE_GEAR_RATIO);
     }
     /**
      * Mr. Morris: TO DO: may want to work in degrees, then convert to range from -0.5 to 0.5, see setWristAngle() function
@@ -245,7 +246,7 @@ public class RobotHardware {
      */
     public void setWristAngle(double angle){
         angle = Range.clip(angle / WRIST_MAX_ANGLE, -0.5, 0.5); // convert angle in degrees to a range from -0.5 to 0.5.
-        gripper.setPosition(MID_SERVO + angle);
+        wrist.setPosition(MID_SERVO + angle);
     }
 
     // Toggle streaming on/off to save CPU resources
