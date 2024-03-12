@@ -173,6 +173,7 @@ public class MorrisPOVDrive extends LinearOpMode {
             else if (gamepad1.b && getRuntime() - bLastTime > BUTTON_PRESS_DELAY) {
                 if (armExtendTarget > RobotHardware.ARM_RETRACT_MAX) {
                     armExtendTarget -= RobotHardware.ARM_RETRACT_POWER; // retract when B is pressed
+                    // CLEAN UP LANGUAGE - refers to power but should be angle, make it like arm rotate
                 }
                 bLastTime = getRuntime();
             }
