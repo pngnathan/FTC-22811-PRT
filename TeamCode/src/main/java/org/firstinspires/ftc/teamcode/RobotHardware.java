@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode;/* Copyright (c) 2022 FIRST. All rights reserved.
+package org.firstinspires.ftc.teamcode;
+/* Copyright (c) 2022 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -85,7 +86,7 @@ public class RobotHardware {
     public static final double ARM_INCREMENT_DEGREES = 5, ARM_ROTATE_MAX = 225, ARM_ROTATE_MIN = -45 ;
     public static final double ARM_ROTATE_ENCODER_RESOLUTION = 2786.2, ARM_ROTATE_GEAR_RATIO = 20 ;
     public static final double ARM_EXTEND_POWER  = 0.10, ARM_RETRACT_POWER  = -0.10 ;
-    public static final double ARM_EXTEND_MAX = 100; // TO DO: This is almost certainly a wrong number for the max travel.
+    public static final double ARM_EXTEND_MAX = 1000; // TO DO: This is almost certainly a wrong number for the max travel.
     public static final double ARM_RETRACT_MAX = 0; // TO DO: This is almost certainly a wrong number for the max travel.
     // Define vision defaults
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera

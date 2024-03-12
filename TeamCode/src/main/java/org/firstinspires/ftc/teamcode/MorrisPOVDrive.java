@@ -59,11 +59,11 @@ import org.firstinspires.ftc.teamcode.RobotHardware;
  * Mr. Morris:          TO DO:  1) Consider remapping buttons for movement to one joystick and arm rotation to other joystick,
  *                                 or triggers for forward/backward, left stick for turning, right stick for steering
  *                              2) Set preset locations for arm height and maybe gripper limits
- *                              3) Add elapsed time tracking and implement better button press delay method. See https://stemrobotics.cs.pdx.edu/node/7262.html
  *
  *     COMPLETE, NEEDS TESTING: 1) Finish updating to match RobotHardware file definitions, then delete or comment out @Disabled
  *                              2) Enable Camera live view
  *                              3) Use math to keep wrist turned so that gripper is level with ground (rotate relative to arm rotation)
+ *                              4) Add elapsed time tracking and implement better button press delay method. See https://stemrobotics.cs.pdx.edu/node/7262.html
  */
 
 @TeleOp(name="Morris POV Drive", group="Robot")
